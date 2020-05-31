@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -24,7 +25,11 @@ namespace Szkolenie3Projekt
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-            services.AddDbContext<ProjectContext>();
+
+            var migrationAssembly = $"{ nameof(Szkolenie3Projekt) }.{ nameof(Szkolenie3Projekt.DataAccess) }";
+            services.AddDbContext<ProjectContext>(o =>
+                o.UseSqlServer(Configuration.GetConnectionString("defaultDb"),
+                o => o.MigrationsAssembly(migrationAssembly)));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
