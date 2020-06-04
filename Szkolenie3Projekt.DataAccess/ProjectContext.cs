@@ -8,7 +8,7 @@ namespace Szkolenie3Projekt.DataAccess
 {
     public class ProjectContext : DbContext
     {
-        public ProjectContext()
+        public ProjectContext(DbContextOptions<ProjectContext> options) : base(options)
         {
 
         }
