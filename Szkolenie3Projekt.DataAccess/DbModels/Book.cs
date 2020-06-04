@@ -14,7 +14,7 @@ namespace Szkolenie3Projekt.DataAccess.DbModels
         [Required]
         public string Description { get; set; }
         [DataType(DataType.Date)]
-        [DisplayName("ReleaseDate")]
+        [DisplayName("Release date")]
         public DateTime ReleaseDate { get; set; }
         [Range(1, 10)]
         public int Score { get; set; }

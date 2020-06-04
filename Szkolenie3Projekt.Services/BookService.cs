@@ -39,7 +39,10 @@ namespace Szkolenie3Projekt.Services
 
         public async Task<Book> Get(int id)
         {
-            return await _bookRepo.GetAll().FirstOrDefaultAsync(x => x.Id == id);
+            return await _bookRepo
+                .GetAll()
+                .Include(b => b.Author)
+                .FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<Book> Get(string title, DateTime releaseDate, int authorId)

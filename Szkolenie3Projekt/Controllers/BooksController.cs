@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using Szkolenie3Projekt.DataAccess;
 using Szkolenie3Projekt.DataAccess.DbModels;
 using Szkolenie3Projekt.DataAccess.Repositories;
@@ -46,7 +47,13 @@ namespace Szkolenie3Projekt.Controllers
         // GET: Books/Create
         public async Task<IActionResult> Create()
         {
-            ViewData["AuthorId"] = new SelectList(await _authorService.GetAll(), "Id", "FirstName");
+            var authors = await _authorService.GetAll();
+            ViewData["NoAuthors"] = false;
+            if (authors.Count() < 1)
+                ViewData["NoAuthors"] = true;
+
+            //ViewData["AuthorId"] = new SelectList(authors, "Id", "FirstName");
+            ViewData["AuthorId"] = AuthorSelectList(authors);
             return View();
         }
 
@@ -55,9 +62,12 @@ namespace Szkolenie3Projekt.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Title,Description,ReleaseDate,Score,AuthorId")] Book book)
         {
+            var authors = await _authorService.GetAll();
+
             if (!ModelState.IsValid)
             {
-                ViewData["AuthorId"] = new SelectList(await _authorService.GetAll(), "Id", "FirstName", book.AuthorId);
+                //ViewData["AuthorId"] = new SelectList(authors, "Id", "FirstName", book.AuthorId);
+                ViewData["AuthorId"] = AuthorSelectList(authors, book.AuthorId);
                 return View(book);
             }
 
@@ -83,7 +93,8 @@ namespace Szkolenie3Projekt.Controllers
             if (book == null)
                 return NotFound();
 
-            ViewData["AuthorId"] = new SelectList(await _authorService.GetAll(), "Id", "FirstName", book.AuthorId);
+            //ViewData["AuthorId"] = new SelectList(await _authorService.GetAll(), "Id", "FirstName", book.AuthorId);
+            ViewData["AuthorId"] = AuthorSelectList(await _authorService.GetAll(), book.AuthorId);
             return View(book);
         }
 
@@ -107,7 +118,8 @@ namespace Szkolenie3Projekt.Controllers
 
             await _bookService.Update(book);
 
-            ViewData["AuthorId"] = new SelectList(await _authorService.GetAll(), "Id", "FirstName", book.AuthorId);
+            //ViewData["AuthorId"] = new SelectList(await _authorService.GetAll(), "Id", "FirstName", book.AuthorId);
+            ViewData["AuthorId"] = AuthorSelectList(await _authorService.GetAll(), book.AuthorId);
             return RedirectToAction(nameof(Index));
         }
 
@@ -140,6 +152,19 @@ namespace Szkolenie3Projekt.Controllers
         {
             var book = await _bookService.Get(id);
             return book!= null;
+        }
+
+        private SelectList AuthorSelectList(IEnumerable<Author> authors, int selected = 0)
+        {
+            return new SelectList(authors.Select(a => new
+            {
+                Id = a.Id,
+                Text = $"{a.FirstName} {a.LastName} {a.DateOfBirth:dd/MM/yyyy}"
+            }),
+            "Id", 
+            "Text", 
+            selected
+            );
         }
     }
 }

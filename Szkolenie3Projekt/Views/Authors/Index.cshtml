@@ -21,7 +21,9 @@
             <th>
                 Date of brith
             </th>
-            <th>Options</th>
+            <th class="text-right">
+                Options
+            </th>
         </tr>
     </thead>
     <tbody>
@@ -36,7 +38,7 @@
             <td>
                 @item.DateOfBirth.ToString("dd/MM/yyyy")
             </td>
-            <td class="float-right">
+            <td class="text-right">
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
                 <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>

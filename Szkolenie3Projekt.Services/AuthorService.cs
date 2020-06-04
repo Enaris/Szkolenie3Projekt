@@ -35,7 +35,9 @@ namespace Szkolenie3Projekt.Services
 
         public async Task<Author> Get(int id)
         {
-            return await _authorRepo.GetAll().FirstOrDefaultAsync(x => x.Id == id);
+            return await _authorRepo
+                .GetAll()
+                .FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<Author> Get(string firstName, string lastName, DateTime dateOfBrith)
