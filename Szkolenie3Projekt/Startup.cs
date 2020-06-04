@@ -2,13 +2,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Szkolenie3Projekt.Automapper;
 using Szkolenie3Projekt.DataAccess;
+using Szkolenie3Projekt.DataAccess.Repositories;
+using Szkolenie3Projekt.Services;
 
 namespace Szkolenie3Projekt
 {
@@ -30,6 +34,13 @@ namespace Szkolenie3Projekt
             services.AddDbContext<ProjectContext>(o =>
                 o.UseSqlServer(Configuration.GetConnectionString("defaultDb"),
                 o => o.MigrationsAssembly(migrationAssembly)));
+
+            services.AddAutoMapper(typeof(Profiles));
+
+            services.AddScoped(typeof(IBookRepository), typeof(BookRepository));
+            services.AddScoped(typeof(IAuthorRepository), typeof(AuthorRepository));
+            services.AddScoped(typeof(IAuthorService), typeof(AuthorService));
+            services.AddScoped(typeof(IBookService), typeof(BookService));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
