@@ -113,7 +113,7 @@ namespace Szkolenie3Projekt.Controllers
             if (id == null)
                 return NotFound();
 
-            var author = await _authorService.Get(id.Value);
+            var author = await _authorService.GetDeatils(id.Value);
 
             if (author == null)
                 return NotFound();
