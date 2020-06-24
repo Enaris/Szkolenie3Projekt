@@ -8,10 +8,10 @@ namespace Szkolenie3Projekt.Services
 {
     public interface IBookService
     {
-        Task Create(Book book);
+        Task Create(BookAddDto book);
         Task<IEnumerable<BookListDto>> GetAll();
         Task<Book> Get(int id);
-        Task<Book> Get(string title, DateTime releaseDate, int authorId);
+        Task<Book> Get(string title, DateTime releaseDate);
         Task Update(Book book);
         Task<bool?> Delete(int id);
     }

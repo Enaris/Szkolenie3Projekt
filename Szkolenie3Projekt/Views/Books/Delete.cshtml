@@ -36,11 +36,14 @@
             @Html.DisplayFor(model => model.Score)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Author)
+            @Html.DisplayNameFor(model => model.AuthorBooks)
         </dt>
         <dd class="col-sm-10">
-            @{var authorStr = $"{Model.Author.FirstName} {Model.Author.LastName}";}
-            <a asp-action="Details" asp-controller="Authors" asp-route-id="@Model.Author.Id">@authorStr</a>
+            @foreach (var ab in Model.AuthorBooks)
+            {
+                var authorStr = $"{ab.Author.FirstName} {ab.Author.LastName}";
+                <a asp-action="Details" asp-controller="Authors" asp-route-id="@ab.Author.Id">@authorStr</a>
+            }
         </dd>
     </dl>
     

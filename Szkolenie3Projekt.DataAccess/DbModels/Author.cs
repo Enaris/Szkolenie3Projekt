@@ -19,6 +19,6 @@ namespace Szkolenie3Projekt.DataAccess.DbModels
         [DisplayName("Date of birth")]
 
         public DateTime DateOfBirth { get; set; }
-        public virtual ICollection<Book> Books { get; set; }
+        public virtual ICollection<AuthorBook> AuthorBooks { get; set; }
     }
 }

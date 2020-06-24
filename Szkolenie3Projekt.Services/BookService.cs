@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Szkolenie3Projekt.DataAccess.DbModels;
@@ -14,24 +15,40 @@ namespace Szkolenie3Projekt.Services
     {
         private readonly IMapper _mapper;
         private readonly IBookRepository _bookRepo;
+        private readonly IAuthorBookRepository _authorBookRepo;
 
-        public BookService(IMapper mapper, IBookRepository bookRepo)
+        public BookService(IMapper mapper, IBookRepository bookRepo, IAuthorBookRepository authorBookRepo)
         {
             this._mapper = mapper;
             this._bookRepo = bookRepo;
+            this._authorBookRepo = authorBookRepo;
         }
 
-        public async Task Create(Book book)
+        public async Task Create(BookAddDto book)
         {
-            await _bookRepo.CreateAsync(book);
+            var bookToAdd = _mapper.Map<Book>(book);
+            await _bookRepo.CreateAsync(bookToAdd);
             await _bookRepo.SaveChangesAsync();
+
+            var bookAuthorsToAdd = book.AuthorsIds.Select(aId => new AuthorBook
+            {
+                AuthorId = aId,
+                BookId = bookToAdd.Id
+            });
+
+            foreach (var ba in bookAuthorsToAdd)
+            {
+                await _authorBookRepo.CreateAsync(ba);
+            }
+            await _authorBookRepo.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<BookListDto>> GetAll()
         {
             var booksDb = await _bookRepo
                 .GetAll()
-                .Include(b => b.Author)
+                .Include(b => b.AuthorBooks)
+                    .ThenInclude(ab => ab.Author)
                 .ToListAsync();
 
             return _mapper.Map<IEnumerable<BookListDto>>(booksDb);
@@ -41,15 +58,16 @@ namespace Szkolenie3Projekt.Services
         {
             return await _bookRepo
                 .GetAll()
-                .Include(b => b.Author)
+                .Include(b => b.AuthorBooks)
+                    .ThenInclude(ab => ab.Author)
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public async Task<Book> Get(string title, DateTime releaseDate, int authorId)
+        public async Task<Book> Get(string title, DateTime releaseDate)
         {
             return await _bookRepo
                 .GetAll()
-                .FirstOrDefaultAsync(x => x.Title == title && x.ReleaseDate == releaseDate && x.AuthorId == authorId);
+                .FirstOrDefaultAsync(x => x.Title == title && x.ReleaseDate == releaseDate);
         }
 
         public async Task Update(Book book)

@@ -1,4 +1,4 @@
-﻿@model Szkolenie3Projekt.DataAccess.DbModels.Book
+﻿@model Szkolenie3Projekt.Services.DTOs.BookAddDto
 
 @{
     ViewData["Title"] = "Create";
@@ -36,8 +36,8 @@
                     <span asp-validation-for="Score" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <label asp-for="AuthorId" class="control-label"></label>
-                    <select asp-for="AuthorId" class="form-control" asp-items="ViewBag.AuthorId"></select>
+                    <label asp-for="AuthorsIds" class="control-label"></label>
+                    <select asp-for="AuthorsIds" class="form-control" asp-items="ViewBag.AuthorId"></select>
                 </div>
                 <div class="form-group">
                     <input type="submit" value="Create" class="btn btn-primary" />

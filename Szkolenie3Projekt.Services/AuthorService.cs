@@ -33,6 +33,15 @@ namespace Szkolenie3Projekt.Services
             return await _authorRepo.GetAll().ToListAsync();
         }
 
+        public async Task<IEnumerable<Author>> GetAllWBooks()
+        {
+            return await _authorRepo
+                .GetAll()
+                .Include(a => a.AuthorBooks)
+                    .ThenInclude(ab => ab.Book)
+                .ToListAsync();
+        }
+
         public async Task<Author> Get(int id)
         {
             return await _authorRepo
@@ -51,7 +60,8 @@ namespace Szkolenie3Projekt.Services
         {
             var authorDb = await _authorRepo
                 .GetAll()
-                .Include(a => a.Books)
+                .Include(a => a.AuthorBooks)
+                    .ThenInclude(ab => ab.Book)
                 .FirstOrDefaultAsync(x => x.Id == id);
             if (authorDb == null)
                 return null;

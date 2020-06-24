@@ -10,16 +10,16 @@
     <h4>Book</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Title)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Title)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Description)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Description)
         </dd>
         <dt class="col-sm-2">
@@ -28,17 +28,21 @@
         <dd class="col-sm-10">
             @Model.ReleaseDate.ToString("dd/MM/yyyy")
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Score)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Score)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Author)
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.AuthorBooks)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Author.FirstName)
+        <dd class="col-sm-10">
+            @foreach (var ab in Model.AuthorBooks)
+            {
+                var authorStr = $"{ab.Author.FirstName} {ab.Author.LastName}";
+                <a asp-action="Details" asp-controller="Authors" asp-route-id="@ab.Author.Id">@authorStr</a>
+            }
         </dd>
     </dl>
 </div>

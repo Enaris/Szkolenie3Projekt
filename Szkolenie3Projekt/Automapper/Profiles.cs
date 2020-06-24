@@ -16,6 +16,7 @@ namespace Szkolenie3Projekt.Automapper
             CreateMap<Author, AuthorListDto>();
             CreateMap<Book, AuthorBookDto>();
             CreateMap<Book, BookListDto>();
+            CreateMap<BookAddDto, Book>();
         }
     }
 }

@@ -10,6 +10,7 @@ namespace Szkolenie3Projekt.Services
     {
         Task Create(Author author);
         Task<IEnumerable<Author>> GetAll();
+        Task<IEnumerable<Author>> GetAllWBooks();
         Task<Author> Get(int id);
         Task<Author> Get(string firstName, string lastName, DateTime dateOfBrith);
         Task<AuthorDetailsDto> GetDeatils(int id);

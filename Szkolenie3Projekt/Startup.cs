@@ -39,6 +39,7 @@ namespace Szkolenie3Projekt
 
             services.AddScoped(typeof(IBookRepository), typeof(BookRepository));
             services.AddScoped(typeof(IAuthorRepository), typeof(AuthorRepository));
+            services.AddScoped(typeof(IAuthorBookRepository), typeof(AuthorBookRepository));
             services.AddScoped(typeof(IAuthorService), typeof(AuthorService));
             services.AddScoped(typeof(IBookService), typeof(BookService));
         }
