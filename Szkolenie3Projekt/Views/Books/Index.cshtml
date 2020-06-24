@@ -19,7 +19,7 @@
                 @Html.DisplayNameFor(model => model.Score)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Author)
+                @Html.DisplayNameFor(model => model.Authors)
             </th>
             <th>
                 Release date
@@ -40,8 +40,17 @@
                 @Html.DisplayFor(modelItem => item.Score)
             </td>
             <td>
-                @{var authorStr = $"{item.Author.FirstName} {item.Author.LastName}";}
-                <a asp-action="Details" asp-controller="Authors" asp-route-id="@item.Author.Id">@authorStr</a>
+                @for (int i = 0; i < item.Authors.Count() && i < 3; ++i)
+                {
+                    var author = item.Authors.ElementAt(i);
+                    var authorStr = $"{author.FirstName} {author.LastName}";
+                    <a asp-action="Details" asp-controller="Authors" asp-route-id="@author.Id">@authorStr</a>
+                    <br/>
+                    if (item.Authors.Count() > 3 && i == 2)
+                    {
+                        <span> And others </span>
+                    }
+                }
             </td>
             <td>
                 @item.ReleaseDate.ToString("dd/MM/yyyy")

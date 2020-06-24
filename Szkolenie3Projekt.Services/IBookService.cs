@@ -10,9 +10,10 @@ namespace Szkolenie3Projekt.Services
     {
         Task Create(BookAddDto book);
         Task<IEnumerable<BookListDto>> GetAll();
+        Task<BookEditDto> Get4Edit(int id);
         Task<Book> Get(int id);
         Task<Book> Get(string title, DateTime releaseDate);
-        Task Update(Book book);
+        Task Update(BookEditDto book);
         Task<bool?> Delete(int id);
     }
 }

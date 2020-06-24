@@ -15,7 +15,12 @@ namespace Szkolenie3Projekt.Automapper
             CreateMap<Author, AuthorDetailsDto>();
             CreateMap<Author, AuthorListDto>();
             CreateMap<Book, AuthorBookDto>();
-            CreateMap<Book, BookListDto>();
+            CreateMap<Book, BookListDto>()
+                .ForMember(b => b.Authors, o => o.MapFrom(s => s.AuthorBooks.Select(ab => ab.Author)));
+            CreateMap<Book, BookEditDto>()
+                .ForMember(b => b.AuthorsIds, o => o.MapFrom(s => s.AuthorBooks.Select(ab => ab.AuthorId).ToList()));
+            CreateMap<BookEditDto, Book>()
+                .ForMember(b => b.AuthorBooks, o => o.Ignore());
             CreateMap<BookAddDto, Book>();
         }
     }

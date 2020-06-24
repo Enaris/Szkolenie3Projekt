@@ -1,4 +1,4 @@
-﻿@model Szkolenie3Projekt.DataAccess.DbModels.Book
+﻿@model Szkolenie3Projekt.Services.DTOs.BookEditDto
 
 @{
     ViewData["Title"] = "Edit";
@@ -32,11 +32,11 @@
                 <input asp-for="Score" class="form-control" />
                 <span asp-validation-for="Score" class="text-danger"></span>
             </div>
-            @*<div class="form-group">
+            <div class="form-group">
                 <label asp-for="AuthorsIds" class="control-label"></label>
                 <select asp-for="AuthorsIds" class="form-control" asp-items="ViewBag.AuthorId"></select>
                 <span asp-validation-for="AuthorsIds" class="text-danger"></span>
-            </div>*@
+            </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>

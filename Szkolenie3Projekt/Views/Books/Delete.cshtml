@@ -42,6 +42,7 @@
             @foreach (var ab in Model.AuthorBooks)
             {
                 var authorStr = $"{ab.Author.FirstName} {ab.Author.LastName}";
+                authorStr += ab.Id == Model.AuthorBooks.Last().Id ? "" : ", ";
                 <a asp-action="Details" asp-controller="Authors" asp-route-id="@ab.Author.Id">@authorStr</a>
             }
         </dd>

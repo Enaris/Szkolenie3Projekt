@@ -8,7 +8,7 @@ namespace Szkolenie3Projekt.Services.DTOs
     {
         public int Id { get; set; }
         public string Title { get; set; }
-        public AuthorListDto Author { get; set; }
+        public IEnumerable<AuthorListDto> Authors { get; set; }
         public DateTime ReleaseDate { get; set; }
         public int Score { get; set; }
 

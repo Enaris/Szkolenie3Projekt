@@ -63,17 +63,54 @@ namespace Szkolenie3Projekt.Services
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
 
+        public async Task<BookEditDto> Get4Edit(int id)
+        {
+            var bookDb = await _bookRepo
+                .GetAll()
+                .Include(b => b.AuthorBooks)
+                    .ThenInclude(ab => ab.Author)
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            return _mapper.Map<BookEditDto>(bookDb);
+        }
+
         public async Task<Book> Get(string title, DateTime releaseDate)
         {
             return await _bookRepo
                 .GetAll()
+                .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Title == title && x.ReleaseDate == releaseDate);
         }
 
-        public async Task Update(Book book)
+        public async Task Update(BookEditDto book)
         {
-            _bookRepo.Update(book);
+            var bookDb = await _bookRepo
+                .GetAll()
+                .FirstOrDefaultAsync(b => b.Id == book.Id);
+
+            _mapper.Map(book, bookDb);
+
+            _bookRepo.Update(bookDb);
             await _bookRepo.SaveChangesAsync();
+
+            var oldBookAuthors = await _authorBookRepo
+                .GetAll()
+                .Where(ab => ab.BookId == book.Id)
+                .ToListAsync();
+
+            foreach (var ab in oldBookAuthors)
+                _authorBookRepo.Delete(ab);
+
+            await _authorBookRepo.SaveChangesAsync();
+
+            var newBookAuthors = book
+                .AuthorsIds
+                .Select(aId => new AuthorBook { AuthorId = aId, BookId = bookDb.Id });
+
+            foreach (var ab in newBookAuthors)
+                await _authorBookRepo.CreateAsync(ab);
+
+            await _authorBookRepo.SaveChangesAsync();
         }
 
         public async Task<bool?> Delete(int id)

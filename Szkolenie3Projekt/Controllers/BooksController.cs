@@ -56,13 +56,14 @@ namespace Szkolenie3Projekt.Controllers
             //ViewData["AuthorId"] = new SelectList(authors, "Id", "FirstName");
             //ViewData["AuthorId"] = AuthorSelectList(authors);
             ViewData["AuthorId"] = AuthorsSelectList(authors, new List<AuthorBook>());
+
             return View();
         }
 
         // POST: Books/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Description,ReleaseDate,Score,AuthorId")] BookAddDto book)
+        public async Task<IActionResult> Create([Bind("Id,Title,Description,ReleaseDate,Score,AuthorsIds,Authors")] BookAddDto book)
         {
             var authors = await _authorService.GetAllWBooks();
 
@@ -91,21 +92,21 @@ namespace Szkolenie3Projekt.Controllers
             if (id == null)
                 return NotFound();
 
-            var book = await _bookService.Get(id.Value);
+            var book = await _bookService.Get4Edit(id.Value);
 
             if (book == null)
                 return NotFound();
 
             //ViewData["AuthorId"] = new SelectList(await _authorService.GetAll(), "Id", "FirstName", book.AuthorId);
             //ViewData["AuthorId"] = AuthorSelectList(await _authorService.GetAll(), book.AuthorId);
-            ViewData["AuthorId"] = AuthorsSelectList(await _authorService.GetAll(), book.AuthorBooks);
+            ViewData["AuthorId"] = AuthorsSelectList(await _authorService.GetAll(), book.AuthorsIds);
             return View(book);
         }
 
         // POST: Books/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,ReleaseDate,Score,AuthorId")] Book book)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,ReleaseDate,Score,AuthorsIds,Authors")] BookEditDto book)
         {
             if (id != book.Id)
                 return NotFound();
@@ -123,7 +124,7 @@ namespace Szkolenie3Projekt.Controllers
             await _bookService.Update(book);
 
             //ViewData["AuthorId"] = new SelectList(await _authorService.GetAll(), "Id", "FirstName", book.AuthorId);
-            ViewData["AuthorId"] = AuthorsSelectList(await _authorService.GetAll(), book.AuthorBooks);
+            ViewData["AuthorId"] = AuthorsSelectList(await _authorService.GetAll(), book.AuthorsIds);
             return RedirectToAction(nameof(Index));
         }
 
@@ -191,10 +192,6 @@ namespace Szkolenie3Projekt.Controllers
 
         private MultiSelectList AuthorsSelectList(IEnumerable<Author> authors, IEnumerable<int> bookAuthors)
         {
-            var stBookId = bookAuthors.Count() > 0 ? bookAuthors.First() : -1;
-            if (stBookId != -1 && bookAuthors.Any(ba => ba != stBookId))
-                throw new InvalidOperationException("You have to pass authors of only 1 book as 2nd argument -.-.");
-
             var selected = bookAuthors.Count() > 0 ? bookAuthors : new List<int> { authors.First().Id };
             return new MultiSelectList(authors.Select(a => new
             {
