@@ -9,7 +9,7 @@
     var author = $"{Model.FirstName} {Model.LastName}";
 }
 
-<h3>Are you sure you want to delete this author and all of his/hers books?</h3>
+<h3>Are you sure you want to delete this author?</h3>
 <div>
     <h4>@author</h4>
     <hr />
@@ -26,6 +26,9 @@
     {
         <div>
             <h5>Books</h5>
+            <span class="text-danger">All books with this author will have this author removed.</span>
+            <br/>
+            <span class="text-danger">All books that are only authored by this author will be removed.</span>
             <ul>
                 @foreach (var b in Model.Books)
                 {

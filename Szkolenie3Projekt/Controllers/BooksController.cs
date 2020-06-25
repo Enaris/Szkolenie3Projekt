@@ -65,12 +65,17 @@ namespace Szkolenie3Projekt.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Title,Description,ReleaseDate,Score,AuthorsIds,Authors")] BookAddDto book)
         {
-            var authors = await _authorService.GetAllWBooks();
+            var authors = await _authorService.GetAll();
+
+            ViewData["NoAuthors"] = false;
+            if (authors.Count() < 1)
+                ViewData["NoAuthors"] = true;
 
             if (!ModelState.IsValid)
             {
                 //ViewData["AuthorId"] = new SelectList(authors, "Id", "FirstName", book.AuthorId);
                 //ViewData["AuthorId"] = AuthorSelectList(authors, book.AuthorId);
+
                 ViewData["AuthorId"] = AuthorsSelectList(authors, book.AuthorsIds);
                 return View(book);
             }
@@ -79,6 +84,7 @@ namespace Szkolenie3Projekt.Controllers
             if (sameBook != null)
             {
                 ModelState.AddModelError("", $"{book.Title} released {book.ReleaseDate:dd/MM/yyy} already exists");
+                ViewData["AuthorId"] = AuthorsSelectList(authors, book.AuthorsIds);
                 return View(book);
             }
 
@@ -178,7 +184,12 @@ namespace Szkolenie3Projekt.Controllers
             if (stBookId != -1 && bookAuthors.Any(ba => ba.BookId != stBookId))
                 throw new InvalidOperationException("You have to pass authors of only 1 book as 2nd argument -.-.");
 
-            var selected = bookAuthors.Count() > 0 ? bookAuthors.Select(ba => ba.AuthorId) : new List<int> { authors.First().Id };
+            var selected = 
+                bookAuthors.Count() > 0 ? 
+                bookAuthors.Select(ba => ba.AuthorId) : 
+                authors.Count() > 0 ?
+                new List<int> { authors.First().Id } :
+                new List<int>();
             return new MultiSelectList(authors.Select(a => new
             {
                 Id = a.Id,

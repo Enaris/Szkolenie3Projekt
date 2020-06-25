@@ -15,11 +15,15 @@ namespace Szkolenie3Projekt.Services
     {
         private readonly IAuthorRepository _authorRepo;
         private readonly IMapper _mapper;
+        private readonly IAuthorBookRepository _authorBookRepo;
+        private readonly IBookRepository _bookRepo;
 
-        public AuthorService(IAuthorRepository authorRepo, IMapper mapper)
+        public AuthorService(IAuthorRepository authorRepo, IMapper mapper, IAuthorBookRepository authorBookRepo, IBookRepository bookRepo)
         {
             this._authorRepo = authorRepo;
             this._mapper = mapper;
+            this._authorBookRepo = authorBookRepo;
+            this._bookRepo = bookRepo;
         }
 
         public async Task Create(Author author)
@@ -81,6 +85,17 @@ namespace Szkolenie3Projekt.Services
             var authorDb = await Get(id);
             if (authorDb == null)
                 return null;
+
+            var booksWOnlyThisAuthor = await _bookRepo
+                .GetAll()
+                .Include(b => b.AuthorBooks)
+                .Where(b => b.AuthorBooks.Count() == 1 && b.AuthorBooks.First().AuthorId == id)
+                .ToListAsync();
+
+            foreach (var b in booksWOnlyThisAuthor)
+                _bookRepo.Delete(b);
+
+            await _bookRepo.SaveChangesAsync();
 
             _authorRepo.Delete(authorDb);
             await _authorRepo.SaveChangesAsync();
