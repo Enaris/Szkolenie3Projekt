@@ -73,8 +73,6 @@ namespace Szkolenie3Projekt.Controllers
 
             if (!ModelState.IsValid)
             {
-                //ViewData["AuthorId"] = new SelectList(authors, "Id", "FirstName", book.AuthorId);
-                //ViewData["AuthorId"] = AuthorSelectList(authors, book.AuthorId);
 
                 ViewData["AuthorId"] = AuthorsSelectList(authors, book.AuthorsIds);
                 return View(book);
@@ -103,8 +101,6 @@ namespace Szkolenie3Projekt.Controllers
             if (book == null)
                 return NotFound();
 
-            //ViewData["AuthorId"] = new SelectList(await _authorService.GetAll(), "Id", "FirstName", book.AuthorId);
-            //ViewData["AuthorId"] = AuthorSelectList(await _authorService.GetAll(), book.AuthorId);
             ViewData["AuthorId"] = AuthorsSelectList(await _authorService.GetAll(), book.AuthorsIds);
             return View(book);
         }
@@ -129,7 +125,6 @@ namespace Szkolenie3Projekt.Controllers
 
             await _bookService.Update(book);
 
-            //ViewData["AuthorId"] = new SelectList(await _authorService.GetAll(), "Id", "FirstName", book.AuthorId);
             ViewData["AuthorId"] = AuthorsSelectList(await _authorService.GetAll(), book.AuthorsIds);
             return RedirectToAction(nameof(Index));
         }
